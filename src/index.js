@@ -3,11 +3,31 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Map from './Map';
+import Report from './Report';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import { api } from './api';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App/>}>
+       <Route path="/" element={<Map/>} />
+      <Route loader={async()=>{return await api.get('quries')}} path="queries" element={<Report/>} />
+      {/* ... etc. */}
+    </Route>
+  )
+);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 

@@ -1,10 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
 import Map from './Map';
+import {Outlet } from "react-router-dom";
 function App() {
   return (
     <div className="App">
-      <Map/>
+      <Outlet/>
     </div>
   );
 }
