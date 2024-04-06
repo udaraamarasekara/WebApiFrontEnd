@@ -10,8 +10,8 @@ const Map = () => {
 
   async function getData()
   { 
-    const output = await api.get('/');
-    await setWeatherData(output.data.response.globalObj);
+    var output = await api.get('/');
+     setWeatherData(output.data.response.globalObj);
     
   } 
 
