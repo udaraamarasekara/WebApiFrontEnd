@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import districts from './lk';
+import stations from './lk';
 import { api } from './api';
+import L from 'leaflet'
 const Map = () => {
 
 
-  const [WeatherData, setWeatherData] = useState([]);
+  const [PositionData, setPositionData] = useState([]);
 
   async function getData()
   { 
-    var output = await api.get('/');
-     setWeatherData(output.data.response.globalObj);
+    var output = await api.get('/updateCilent');
+    console.log(output); 
+    setPositionData(output.data);
     
   } 
+
+  function getIcon(_iconSize)
+  {
+    return L.icon({
+      iconUrl:require('./train.jpg'),
+      iconSize:_iconSize
+    })
+  }
 
   useEffect(() => {
     getData();
      setInterval(() => {
       getData();
-    }, 5 * 60 * 1000);
+    },60 * 1000);
   
   }, []);
 
@@ -36,15 +46,20 @@ const Map = () => {
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {districts.map((districtTrue, index) => (
-          <Marker key={index} position={[districtTrue.lat,districtTrue.lng]}>
+        {stations.map((station, index) => (
+          <Marker key={index} position={[station.lat,station.lng]}>
             <Popup>
               <div>
-                <h3>{districtTrue.city}</h3>
-                <p>Temperature:{WeatherData.find(entry=>entry.district === districtTrue.city)?.temperature} °C</p>
-                <p>Humidity:{WeatherData.find(entry=>entry.district === districtTrue.city)?.humidity*100} %</p>
-                <p>Air Pressure:{WeatherData.find(entry=>entry.district === districtTrue.city)?.airPressure} hPa</p>
-
+                <h3>station:{station.city}</h3>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
+          {PositionData?.map((loc, index) => (
+          <Marker key={index} position={[loc.lat,loc.lng]}>
+            <Popup>
+              <div>
+                <h3>train:{loc.train}</h3>
               </div>
             </Popup>
           </Marker>
